@@ -9,14 +9,27 @@ const util = require('util');
 const readdir = util.promisify(fs.readdir);
 const fse = require('fs-extra')
 
-const CSV_FILES = './csv/'
-
 if (process.argv[2] === '--help') {
   console.log('Usage:')
-  console.log('  download-csvs  ')
+  console.log('  download-csvs [output-directory: ./csv/]')
   console.log('Examples:')
   console.log(`  download-csvs`)
+  console.log(`  download-csvs /home/user/csvs`)
   process.exit()
+}
+
+let CSV_FILES = './csv/'
+if (process.argv[2]) {
+  CSV_FILES = process.argv[2]
+  try {
+    if (!fs.existsSync(CSV_FILES)) {
+      fs.mkdirSync(CSV_FILES)
+    }
+  } catch(err) {
+    console.error("The output CSV file directory could not be found or created:")
+    console.error(err)
+    process.exit();
+  }
 }
 
 const params = { }
@@ -197,7 +210,6 @@ async function go(params) {
         // console.log("fileName: " + fileName)
         let groupId = fileName.replace('csv/','').replace('csv-data-sets-','').replace(dataSetIdentifier,'').replace('-group','group').replace('.zip','')
         const csvGroupdirpath = CSV_FILES + groupId + '/'
-        // console.log("Creating group path: " + csvGroupdirpath)
         fs.mkdirSync(csvGroupdirpath)
         const simpleCSVZipfilename = 'csv-data-set.zip'
         // console.log("Writing zip file: " + csvGroupdirpath + fileName)
