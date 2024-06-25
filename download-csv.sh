@@ -9,16 +9,17 @@ const util = require('util');
 const readdir = util.promisify(fs.readdir);
 const fse = require('fs-extra')
 
+let CSV_FILES = './output-csvs/'
+
 if (process.argv[2] === '--help') {
   console.log('Usage:')
-  console.log('  download-csvs [output-directory: ./output-csvs/]')
+  console.log(`  download-csvs [output-directory: ${CSV_FILES}]`)
   console.log('Examples:')
   console.log(`  download-csvs`)
   console.log(`  download-csvs /home/user/csvs`)
   process.exit()
 }
 
-let CSV_FILES = './output-csvs/'
 if (process.argv[2]) {
   CSV_FILES = process.argv[2]
   try {
