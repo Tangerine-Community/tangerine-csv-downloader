@@ -7,7 +7,6 @@ const promisify = require('util').promisify
 const unzipper = require('unzipper')
 const util = require('util');
 const readdir = util.promisify(fs.readdir);
-const unlink = util.promisify(fs.unlink);
 const fse = require('fs-extra')
 
 const CSV_FILES = './csv/'
@@ -152,6 +151,13 @@ async function go(params) {
     
     if (csvStatus && csvStatus.groups) {
       console.log("Received csvStatus complete and group list from server? " + csvStatus.complete)
+
+      try {
+        fs.mkdirSync(CSV_FILES)
+      } catch(err) {
+        // pass
+      }
+
       try {
         const files = await readdir(CSV_FILES);
         for (let index = 0; index < files.length; index++) {
