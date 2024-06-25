@@ -11,14 +11,14 @@ const fse = require('fs-extra')
 
 if (process.argv[2] === '--help') {
   console.log('Usage:')
-  console.log('  download-csvs [output-directory: ./csv/]')
+  console.log('  download-csvs [output-directory: ./output-csvs/]')
   console.log('Examples:')
   console.log(`  download-csvs`)
   console.log(`  download-csvs /home/user/csvs`)
   process.exit()
 }
 
-let CSV_FILES = './csv/'
+let CSV_FILES = './output-csvs/'
 if (process.argv[2]) {
   CSV_FILES = process.argv[2]
   try {
@@ -189,7 +189,7 @@ async function go(params) {
       }
 
       // save the csvStatus
-      const writer = fs.writeFileSync(CSV_FILES + 'csvStatus.json', JSON.stringify(csvStatus));
+      fs.writeFileSync(CSV_FILES + 'csvStatus.json', JSON.stringify(csvStatus));
 
       const outputPath = csvStatus.outputPath
       const outputFilename = outputPath.split('/')[2]
@@ -204,17 +204,15 @@ async function go(params) {
       const zip = fs.createReadStream(outputLocationPath).pipe(unzipper.Parse({forceStream: true}));
       for await (const entry of zip) {
         const fileName = entry.path;
-        const type = entry.type; // 'Directory' or 'File'
-        const size = entry.vars.uncompressedSize; // There is also compressedSize;
-        console.log("fileName: " + fileName + " size: " + size)
-        // console.log("fileName: " + fileName)
         let groupId = fileName.replace('csv/','').replace('csv-data-sets-','').replace(dataSetIdentifier,'').replace('-group','group').replace('.zip','')
         const csvGroupdirpath = CSV_FILES + groupId + '/'
         fs.mkdirSync(csvGroupdirpath)
         const simpleCSVZipfilename = 'csv-data-set.zip'
-        // console.log("Writing zip file: " + csvGroupdirpath + fileName)
         entry.pipe(fs.createWriteStream(csvGroupdirpath + simpleCSVZipfilename))
       }
+
+      console.log("Now unzipping.")
+
 
     } else {
       console.log("Error: no csvStatus. " )

@@ -1,4 +1,4 @@
-./csv/
+./output-csvs/
 .env
 *.csv
 *.swp
