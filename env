@@ -1,3 +1,3 @@
-voss.tangerineURL = 'https://tangerine.project.url'
+tangerineURL = 'https://tangerine.project.url'
 tangerineLoginUser='user1'
 tangerineLoginPassword='password'
