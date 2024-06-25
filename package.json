@@ -1,0 +1,17 @@
+{
+  "name": "tangerine-csv-downloader",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fs-extra": "^8.1.0",
+    "sync-directory": "^2.1.0",
+    "axios": "^0.19.2",
+    "util": "0.12.5"
+  }
+}
