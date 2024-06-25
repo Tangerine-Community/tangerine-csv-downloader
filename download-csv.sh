@@ -10,8 +10,7 @@ const readdir = util.promisify(fs.readdir);
 const unlink = util.promisify(fs.unlink);
 const fse = require('fs-extra')
 
-// const CSV_FILES = '../../data/csv/'
-const CSV_FILES = '../csv/'
+const CSV_FILES = './csv/'
 
 if (process.argv[2] === '--help') {
   console.log('Usage:')
@@ -23,7 +22,7 @@ if (process.argv[2] === '--help') {
 
 const params = { }
 
-let ENV_PATH = "../.env"
+let ENV_PATH = "./.env"
 let env
 
 async function getUser1HttpInterface(username, password) {
@@ -153,17 +152,6 @@ async function go(params) {
     
     if (csvStatus && csvStatus.groups) {
       console.log("Received csvStatus complete and group list from server? " + csvStatus.complete)
-      // console.log("csvStatus: " + JSON.stringify(csvStatus, null, 2))
-      const csvDirpath = CSV_FILES + 'csv/'
-
-      // // delete CSV dir, which had previously extracted files
-      // fs.rmSync(csvDirpath, { recursive: true , force: true}, (err) => {
-      //   if (err) {
-      //       throw err;
-      //   }
-      // })
-      // now clean the whole dir
-      // https://stackoverflow.com/a/49421028
       try {
         const files = await readdir(CSV_FILES);
         for (let index = 0; index < files.length; index++) {

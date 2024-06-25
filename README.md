@@ -8,7 +8,7 @@ It is expected that this script is run on the host machine and not within a cont
 1. Clone the repository
 2. Create the `.env` environment file: `cp env .env`
 3. Fill in the values for the environment variables in the `.env` file
-4. Install node. On AWS, use `sudo apt-get install nodejs`
+4. Install nodejs and npm: `sudo apt-get install nodejs npm`
 5. Install the packages: `npm install`
 
 ## Running the script

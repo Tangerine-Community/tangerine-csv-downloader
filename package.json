@@ -9,9 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.19.2",
     "fs-extra": "^8.1.0",
     "sync-directory": "^2.1.0",
-    "axios": "^0.19.2",
+    "unzipper": "^0.12.1",
     "util": "0.12.5"
   }
 }
