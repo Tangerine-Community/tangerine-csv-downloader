@@ -22,16 +22,18 @@ if (process.argv[2] === '--help') {
 
 if (process.argv[2]) {
   CSV_FILES = process.argv[2]
-  try {
-    if (!fs.existsSync(CSV_FILES)) {
-      fs.mkdirSync(CSV_FILES)
-    }
-  } catch(err) {
-    console.error("The output CSV file directory could not be found or created:")
-    console.error(err)
-    process.exit();
-  }
 }
+
+try {
+  if (!fs.existsSync(CSV_FILES)) {
+    fs.mkdirSync(CSV_FILES)
+  }
+} catch(err) {
+  console.error("The output CSV file directory could not be found or created:")
+  console.error(err)
+  process.exit();
+}
+
 
 const params = { }
 
@@ -149,8 +151,6 @@ async function go(params) {
 
     let csvStatusPath = `${tangerineURL}/csv/${dataSetIdentifier}.json`
 
-    let complete = false
-
     csvStatus = await new Promise(resolve => {
       const interval = setInterval(async () => {
         let csvStatus = await getStatusDoc(http, csvStatusPath)
@@ -165,12 +165,6 @@ async function go(params) {
     
     if (csvStatus && csvStatus.groups) {
       console.log("Received csvStatus complete and group list from server? " + csvStatus.complete)
-
-      try {
-        fs.mkdirSync(CSV_FILES)
-      } catch(err) {
-        // pass
-      }
 
       try {
         const files = await readdir(CSV_FILES);
@@ -202,6 +196,7 @@ async function go(params) {
       await downloadFile(outputLocationUrl, username, password, outputLocationPath) 
       console.log("Now extracting.")
 
+      const subZipPaths = []
       const zip = fs.createReadStream(outputLocationPath).pipe(unzipper.Parse({forceStream: true}));
       for await (const entry of zip) {
         const fileName = entry.path;
@@ -209,11 +204,19 @@ async function go(params) {
         const csvGroupdirpath = CSV_FILES + groupId + '/'
         fs.mkdirSync(csvGroupdirpath)
         const simpleCSVZipfilename = 'csv-data-set.zip'
+        const subZipPath = csvGroupdirpath + simpleCSVZipfilename
+        subZipPaths.push(subZipPath)
         entry.pipe(fs.createWriteStream(csvGroupdirpath + simpleCSVZipfilename))
       }
 
-      console.log("Now unzipping.")
-
+      subZipPaths.forEach(async (subZipPath) => {
+        const subzip = fs.createReadStream(subZipPath).pipe(unzipper.Parse({forceStream: true}));
+        for await (const entry of subzip) {
+          const filePath = entry.path;
+          fs.mkdirSync(filePath)
+          entry.pipe(fs.createWriteStream(filePath))
+        }
+      })
 
     } else {
       console.log("Error: no csvStatus. " )
